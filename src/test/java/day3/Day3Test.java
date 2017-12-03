@@ -15,7 +15,7 @@ class Day3Test {
     @Test
     void test1b() {
         int input=1;
-        assertEquals(1, calculateB(input));
+        assertEquals(2, calculateB(input));
     }
     @Test
     void test2a() {
@@ -35,7 +35,7 @@ class Day3Test {
     @Test
     void test3b() {
         int input=23;
-        assertEquals(23, calculateB(input));
+        assertEquals(25, calculateB(input));
     }
     @Test
     void test4a() {

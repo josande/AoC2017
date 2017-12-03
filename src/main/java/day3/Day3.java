@@ -74,7 +74,7 @@ class Day3 {
     }
     static int calculateB(int input){
         int id=1, currentValue=0;
-        while(currentValue<input) {
+        while(currentValue<=input) {
             currentValue=getCell(id).getValue();
             id++;
         }
