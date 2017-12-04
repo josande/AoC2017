@@ -54,7 +54,7 @@ class Day3 {
             if (cellId == id) {return new Cell(id, x, y);}
             x++; id++;
         }
-        throw new IllegalArgumentException("Unable to fins cell for id:"+id);
+        throw new IllegalArgumentException("Unable to find cell for id:"+id);
     }
     private static int getValue(int x, int y) {
         for (Cell cell : cells) {
