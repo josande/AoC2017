@@ -30,7 +30,7 @@ class Day6 {
 
     }
 
-    List<Integer[]> getKnownValues(String input) {
+    private static List<Integer[]> getKnownValues(String input) {
         List<Integer[]> knownStates = new ArrayList<>();
         String[] valuesAsString = input.split(" ");
         int size= valuesAsString.length;
