@@ -16,8 +16,8 @@ class Day13Test {
                 "6: 4");
         assertEquals(24, getScore());
         assertEquals(10, getDelay());
-
     }
+
     @Test
     void puzzle() {
         String input="0: 3\n" +
@@ -66,6 +66,5 @@ class Day13Test {
         setInput(input);
         System.out.println("Day13(a): "+getScore());
         System.out.println("Day13(b): "+getDelay());
-
     }
 }
