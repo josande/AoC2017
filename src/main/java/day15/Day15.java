@@ -6,28 +6,22 @@ class Day15 {
     private static Long restA, restB;
     private static int matches;
 
-    static void setInput(Long startA, int dividerA, Long startB, int dividerB, int iterations) {
+    static void setInput(Long startA, int dividerA, Long startB, int dividerB, Long iterations) {
         restA=startA; restB=startB; matches=0;
-
+        Long tempA, tempB;
         for (int i=0; i<iterations; i++) {
-            Long tempA=-1L;
+            tempA=-1L;
             while (tempA<0 || tempA%dividerA!=0) {
                 restA = restA * multiplierA % divider;
                 tempA=restA;
             }
-            String a ="0000000000000000" + Long.toBinaryString(restA);
-            a=a.substring(a.length()-16, a.length());
+            tempB=-1L;
 
-            Long tempB=-1L;
             while (tempB<0 || tempB%dividerB!=0) {
                 restB=restB*multiplierB % divider;
                 tempB=restB;
             }
-
-            String b  ="0000000000000000" + Long.toBinaryString(restB);
-            b=b.substring(b.length()-16, b.length());
-
-            if (a.equals(b))
+            if ((restA & 0xffff) == (restB & 0xffff))
                 matches++;
         }
     }
