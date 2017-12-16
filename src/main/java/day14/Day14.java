@@ -2,137 +2,108 @@ package day14;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static day10.Day10.*;
 
-public class Day14 {
+class Day14 {
 
-    static String[] knotHashes=new String[128];
-    static String[] binaryRep =new String[128];
-
-    static int squaresUsed,regions;
-    static Map<Dimension, Boolean> locations = new HashMap<Dimension, Boolean>();
-
+    final private static Boolean[][] data = new Boolean[128][128];
     static void setInput(String input) {
-        squaresUsed=0; regions=0;
-        for (int i=0; i<=127; i++) {
-            knotHashes[i]=getKnotHash(input+"-"+i);
-            binaryRep[i]=toBinaryString(knotHashes[i]);
-
-
-            for (int j=0; j<binaryRep[i].length();j++) {
-                boolean filled=binaryRep[i].charAt(j) == '1';
-                if (filled) {
-                    squaresUsed++;
-                }
-                locations.put(new Dimension(i,j), filled);
-            }
-
-
-
+        String knotHash;
+        for (int y=0; y<128; y++) {
+            knotHash = getKnotHash(input+"-"+y);
+            data[y] = toBinaryArray(knotHash);
         }
 
-        System.out.println("Squares: "+squaresUsed);
-        System.out.println("Regions: "+findNumberOfRegions());
-
-
+    }
+    static int getSquares() {
+        return findSquaresUsed();
+    }
+    static int getRegions() {
+        return findNumberOfRegions();
+    }
+    private static int findSquaresUsed() {
+        int squares=0;
+        for (int y=0; y<128; y++) {
+            for (int x=0; x<128; x++) {
+                if (data[x][y]) {
+                    squares++;
+                }
+            }
+        }
+        return squares;
     }
 
     private static int findNumberOfRegions() {
-        List<Dimension> involvedCells=new ArrayList<>();
-        int maxX=128;
-        int maxY=128;
+        List<Point> involvedCells=new ArrayList<>();
         int numberOfRegions=0;
-
-        while (findFirstRegion() != null) {
-            Dimension d0=findFirstRegion();
-
-            locations.put(d0, false);
+        Point point = findNextRegion();
+        while (point != null) {
 
             involvedCells.clear();
-            involvedCells.add(d0);
+            involvedCells.add(point);
 
-            Boolean cont=true;
+            while (involvedCells.size()>0) {
+                List<Point> newCells=new ArrayList<>();
 
-            while (cont) {
-                List<Dimension> newCells=new ArrayList<Dimension>();
-
-                for (Dimension d : involvedCells) {
-                    int x= (int) d.getWidth();
-                    int y= (int) d.getHeight();
-
-                    if (x > 0) {
-                        Dimension n1 = new Dimension(x - 1, y);
-                        if (locations.get(n1)) {
-                            newCells.add(n1);
-                            locations.put(n1, false);
-                        }
-                    }
-                    if (x < maxX-1 ) {
-                        Dimension n1 = new Dimension(x + 1, y);
-                        if (locations.get(n1)) {
-                            newCells.add(n1);
-                            locations.put(n1, false);
-                        }
-                    }
-                    if (y > 0) {
-                        Dimension n1 = new Dimension(x, y - 1);
-                        if (locations.get(n1)) {
-                            newCells.add(n1);
-                            locations.put(n1, false);
-                        }
-                    }
-                    if (y < maxY-1 ) {
-                        Dimension n1 = new Dimension(x, y + 1);
-                        if (locations.get(n1)) {
-                            newCells.add(n1);
-                            locations.put(n1, false);
-                        }
-                    }
-
-                    cont = newCells.size()>0;
+                for (Point p : involvedCells) {
+                    newCells.addAll(getNeighbours(p));
                 }
                 involvedCells.clear();
                 involvedCells.addAll(newCells);
                 newCells.clear();
             }
-
+            point = findNextRegion();
             numberOfRegions++;
         }
         return numberOfRegions;
     }
-    private static Dimension findFirstRegion() {
-        for (int y = 0; y <= 127; y++) {
-            for (int x = 0; x < binaryRep[y].length(); x++) {
-                Dimension d = new Dimension(x, y);
-                if (locations.get(d)) {
-                    return d;
-                }
+    static private List<Point> getNeighbours(Point p) {
+        int x = (int) p.getX();
+        int y = (int) p.getY();
+        data[x][y]=false;
+        List<Point> neighbors=new ArrayList<>();
+        if (x>0 && data[x-1][y]) {data[x-1][y]=false; neighbors.add(new Point(x-1,y));}
+        if (y>0 && data[x][y-1]) {data[x][y-1]=false; neighbors.add(new Point(x,y-1));}
+        if (x<127 && data[x+1][y]) {data[x+1][y]=false; neighbors.add(new Point(x+1,y));}
+        if (y<127 && data[x][y+1]) {data[x][y+1]=false; neighbors.add(new Point(x,y+1));}
+        return neighbors;
+    }
+    private static Point findNextRegion() {
+        for (int y=0;y<128;y++) {
+            for (int x=0;x<128;x++) {
+                if (data[x][y])
+                    return new Point(x,y);
             }
         }
         return null;
     }
+
     public static String toBinaryString(String hex) {
 
-        String bin = "";
-        String binFragment = "";
+        StringBuilder bin = new StringBuilder();
+        StringBuilder binFragment;
         int iHex;
-        hex = hex.trim();
-        hex = hex.replaceFirst("0x", "");
 
         for(int i = 0; i < hex.length(); i++){
             iHex = Integer.parseInt(""+hex.charAt(i),16);
-            binFragment = Integer.toBinaryString(iHex);
+            binFragment = new StringBuilder(Integer.toBinaryString(iHex));
 
             while(binFragment.length() < 4){
-                binFragment = "0" + binFragment;
+                binFragment.insert(0, "0");
             }
-            bin += binFragment;
+            bin.append(binFragment);
         }
-        return bin;
+        return bin.toString();
+    }
+    private static Boolean[] toBinaryArray(String hex) {
+        Boolean[] bools = new Boolean[128];
+        String binaryString=toBinaryString(hex);
+        for (int i =0; i<128; i++) {
+            bools[i]=binaryString.charAt(i) == '1';
+        }
+        return bools;
     }
 
     static private String getKnotHash(String string) {

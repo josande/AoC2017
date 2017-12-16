@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 class Day3 {
     private static class Cell {
-        private int x,y,id,value=0;
+        private final int x,y,id,value;
 
-        Cell(int id, int x,int y) {
+        Cell(int id, int x, int y) {
             this.id=id;
             this.x=x;
             this.y=y;
-            this.value=getNeigbourValues(x,y);
+            this.value=getNeighbourValues(x,y);
             cells.add(this);
         }
         int getId() {return id;}
@@ -25,36 +25,38 @@ class Day3 {
             }
         }
     }
-    static ArrayList<Cell> cells = new ArrayList<>();
+    private final static ArrayList<Cell> cells = new ArrayList<>();
 
     private static Cell getCell(int cellId) {
         for (Cell cell : cells) {
             if (cell.getId() == cellId) {return cell;}
         }
         int ring = getRing(cellId);
-        int startX = ring - 1, startY = ring == 1 ? 0 : 2 - ring;
-        int startId = ring == 1 ? 1 : 1 + (2 * ring - 3) * (2 * ring - 3);
+        int startId =  1 + (2 * ring - 3) * (2 * ring - 3);
         int sideLength = 2 * ring - 1;
 
-        int x = startX, y = startY, id = startId;
+        int m1=startId+ring-2;
+        int m2=startId+ring-3+sideLength;
+        int m3=startId+ring-4+2*sideLength;
+        int m4=startId+ring-5+3*sideLength;
 
-        for (int i = 0; i < sideLength - 2; i++) {
-            if (cellId == id) {return new Cell(id, x, y);}
-            y++; id++;
+        int d1=cellId-m1, d2=cellId-m2, d3=cellId-m3, d4=cellId-m4;
+
+        int minToMiddle=Math.abs(d1);
+        int x=ring-1, y=d1;
+
+        if (Math.abs(d2)<minToMiddle) {
+            x=-d2; y=ring-1;
+            minToMiddle=d2;
         }
-        for (int i = 0; i < sideLength - 1; i++) {
-            if (cellId == id) {return new Cell(id, x, y);}
-            x--; id++;
+        if (Math.abs(d3)<minToMiddle) {
+            x=-ring+1; y=-d3;
+            minToMiddle=d3;
         }
-        for (int i = 0; i < sideLength - 1; i++) {
-            if (cellId == id) {return new Cell(id, x, y);}
-            y--; id++;
+        if (Math.abs(d4)<minToMiddle) {
+            x=d4; y=-ring+1;
         }
-        for (int i = 0; i < sideLength; i++) {
-            if (cellId == id) {return new Cell(id, x, y);}
-            x++; id++;
-        }
-        throw new IllegalArgumentException("Unable to find cell for id:"+id);
+        return new Cell(cellId, x, y);
     }
     private static int getValue(int x, int y) {
         for (Cell cell : cells) {
@@ -62,20 +64,22 @@ class Day3 {
         }
         return 0;
     }
-    static int getNeigbourValues(int x, int y) {
+    private static int getNeighbourValues(int x, int y) {
         if (x==0 && y==0) {return 1;}
         return getValue(x-1,y+1)+getValue(x,y+1)+getValue(x+1,y+1)+
                getValue(x-1,y)+getValue(x+1,y)+
                getValue(x-1,y-1)+getValue(x,y-1)+getValue(x+1,y-1);
     }
-    static int calculateA(int input){
-        Cell cell = getCell(input);
-        return Math.abs(cell.getX())+Math.abs(cell.getY());
+    static int calculateA(int cellId){
+        Cell cell = getCell(cellId);
+        return (Math.abs(cell.getX())+Math.abs(cell.getY()));
     }
     static int calculateB(int input){
         int id=1, currentValue=0;
-        while(currentValue<=input) {
-            currentValue=getCell(id).getValue();
+        while(currentValue <= input) {
+
+            Cell cell = getCell(id);
+            currentValue=cell.getValue();
             id++;
         }
         return currentValue;

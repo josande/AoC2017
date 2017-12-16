@@ -6,9 +6,9 @@ import java.util.List;
 
 class Day7 {
     private static class Disc{
-        private String name;
-        private int  weight;
-        private List<String> children=new ArrayList<>();
+        final private String name;
+        final private int  weight;
+        final private List<String> children=new ArrayList<>();
         Disc(String name, int weight, String children) {
             this.name=name;
             this.weight=weight;
@@ -39,7 +39,7 @@ class Day7 {
             return childDiscs;
         }
     }
-    static Disc getDiscByName(String name) {
+    private static Disc getDiscByName(String name) {
         for (Disc disc: discs )
             if (disc.getName().equals(name))
                 return disc;

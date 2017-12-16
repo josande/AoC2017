@@ -21,7 +21,6 @@ class Day13 {
         return i;
     }
     private static boolean isCaught(int delay) {
-        boolean caught = false;
         for (int i : layers.keySet())
             if ((i + delay) % (2 * layers.get(i) - 2) == 0)
                 return true;

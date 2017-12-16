@@ -3,7 +3,7 @@ package day16;
 import java.util.Arrays;
 
 class Day16 {
-    static private char[] alphabet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+    final static private char[] alphabet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
 
     static private char[] order, originalOrder;
     static private String[] rows;

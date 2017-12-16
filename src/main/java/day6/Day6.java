@@ -1,6 +1,7 @@
 package day6;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 class Day6 {
@@ -40,15 +41,8 @@ class Day6 {
             values[i]=Integer.valueOf(valuesAsString[i]);
         }
 
-
         for (int i=0;;i++) {
-            knownStates.add(values);
-
-            Integer[] newValues = new Integer[size];
-            for (int j = 0; j < size; j++) {
-                newValues[j] = values[j];
-            }
-            values = newValues;
+            knownStates.add(Arrays.copyOf(values, size));
 
             int highestValue = 0;
             int highestPos = 0;

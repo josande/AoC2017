@@ -4,9 +4,20 @@ import org.junit.jupiter.api.Test;
 
 import static day2.Day2.calculateA;
 import static day2.Day2.calculateB;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Day2Test {
+    @Test
+    void testA() {
+        String input ="5\t1\t9\t5\n7\t5\t3\n2\t4\t6\t8";
+        assertEquals(18, calculateA(input));
+    }
+    @Test
+    void testB() {
+        String input ="5\t9\t2\t8\n9\t4\t7\t3\n3\t8\t6\t5";
+        assertEquals(9, calculateB(input));
+    }
+
     @Test
     void puzzle() {
         String input = "116\t1470\t2610\t179\t2161\t2690\t831\t1824\t2361\t1050\t2201\t118\t145\t2275\t2625\t2333\n" +

@@ -3,10 +3,10 @@ package day10;
 import java.util.ArrayList;
 import java.util.List;
 
-class Day10 {
-    static int currentPosition, skipSize;
-    static int[] list, lengths;
-    static void setInput(int length, int rotations, String input) {
+public class Day10 {
+    private static int currentPosition, skipSize;
+    private static int[] list, lengths;
+    public static void setKnotHashInput(int length, int rotations, String input) {
         list = new int[length];
         if (input.length()>0)
             lengths=new int[input.split(",").length];
@@ -24,18 +24,18 @@ class Day10 {
     }
     private static void rotate(int iterations) {
         for (int j=0; j<iterations; j++) {
-            for (int i = 0; i < lengths.length; i++) {
-                rotatePart(lengths[i]);
+            for (int length : lengths) {
+                rotatePart(length);
             }
         }
     }
-    static String modifyInput(String input) {
-        String newInput="";
+    public static String modifyInput(String input) {
+        StringBuilder newInput= new StringBuilder();
         for (char c : input.toCharArray()) {
-            newInput+=Integer.valueOf(c)+",";
+            newInput.append((int) c).append(",");
         }
-        newInput+="17,31,73,47,23";
-        return newInput;
+        newInput.append("17,31,73,47,23");
+        return newInput.toString();
     }
     private static void rotatePart(int lengthToRotate) {
         int[] rotatedPart=new int[lengthToRotate];
@@ -46,8 +46,7 @@ class Day10 {
             list[(currentPosition+lengthToRotate-i-1)%list.length]=rotatedPart[i];
         }
 
-        int newPosition=(currentPosition+lengthToRotate+skipSize)%list.length;
-        currentPosition=newPosition;
+        currentPosition=(currentPosition+lengthToRotate+skipSize)%list.length;
         skipSize++;
     }
     static int xor(int a, int b) {
@@ -71,20 +70,17 @@ class Day10 {
         return list[0]*list[1];
     }
 
-    static String getDenseHash() {
-        String hash="";
+    public static String getDenseHash() {
+        StringBuilder hash= new StringBuilder();
         for (int i : getXorValues()) {
-            hash+=intToHex(i);
+            hash.append(intToHex(i));
         }
-        return hash;
-
+        return hash.toString();
     }
     static String intToHex(int integer) {
         String hexString= Integer.toHexString(integer);
         if (hexString.length()==1) hexString="0"+hexString;
 
         return hexString;
-
     }
-
 }
