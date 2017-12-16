@@ -1,30 +1,33 @@
 package day16;
 
+import java.util.Arrays;
+
 class Day16 {
     static private char[] alphabet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
 
-    static private String order, originalOrder;
+    static private char[] order, originalOrder;
     static private String[] rows;
-    static private int cycleLength;
+    static private int cycleLength, orderLength;
     static void setInput(int numberOfPrograms, String input) {
+        orderLength=numberOfPrograms;
         rows = input.split(",");
-        order = ""; cycleLength=1;
-        for (int i = 0; i < numberOfPrograms; i++) {
-            order += alphabet[i];
-        }
-        originalOrder=order;
+        order = new char[numberOfPrograms]; cycleLength=1;
+
+        originalOrder=Arrays.copyOf(alphabet, orderLength);
+        order=Arrays.copyOf(originalOrder, orderLength);
+
         dance();
-        while(!order.equals(originalOrder)) {
+        while(!Arrays.equals(order,originalOrder)) {
             dance();
             cycleLength++;
         }
     }
     static String dance(int iterations) {
-        order=originalOrder;
+        order=Arrays.copyOf(originalOrder, orderLength);
         for (int i=0; i<iterations%cycleLength; i++) {
             dance();
         }
-        return order;
+        return String.valueOf(order);
     }
 
     private static void dance() {
@@ -39,25 +42,30 @@ class Day16 {
 
     private static void spin(String row) {
         int length=Integer.valueOf(row.substring(1));
-        order = order.substring(order.length()-length, order.length()) + order.substring(0, order.length()-length);
+
+        char[] temp = Arrays.copyOf(order, orderLength);
+        System.arraycopy(temp, 0, order, length, orderLength-length);
+        System.arraycopy(temp, orderLength-length, order,0, length);
     }
     private static void exchange(String row) {
         row=row.substring(1);
         int pos1=Integer.valueOf(row.split("/")[0]);
         int pos2=Integer.valueOf(row.split("/")[1]);
 
-        char p1=order.charAt(pos1);
-        char p2=order.charAt(pos2);
-
-        order=order.substring(0,pos1)+p2+order.substring(pos1+1);
-        order=order.substring(0,pos2)+p1+order.substring(pos2+1);
+        char p1=order[pos1];
+        order[pos1]=order[pos2];
+        order[pos2]=p1;
     }
     private static void partner(String row) {
-        String p1=""+row.charAt(1);
-        String p2=""+row.charAt(3);
+        char c1 = row.charAt(1);
+        char c2 = row.charAt(3);
 
-        order=order.replaceFirst(p1, "'");
-        order=order.replaceFirst(p2, p1);
-        order=order.replaceFirst("'", p2);
+        for (int i=0; i<orderLength;i++) {
+            if (order[i] == c1)
+                order[i] = c2;
+            else if (order[i] == c2) {
+                order[i] = c1;
+            }
+        }
     }
 }
