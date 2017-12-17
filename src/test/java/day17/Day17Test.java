@@ -9,8 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class Day17Test {
 
     @Test
-    void testA() {
+    void testA1() {
         assertEquals(638, solveA(3, 2017));
+    }
+    @Test
+    void testA2() {
+        assertEquals(0, solveA(3, 21));
     }
     @Test
     void testB() {
