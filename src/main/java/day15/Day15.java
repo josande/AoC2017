@@ -3,6 +3,7 @@ package day15;
 class Day15 {
     final private static Long multiplierA = 16807L, multiplierB = 48271L, divider = 2147483647L;
 
+    @SuppressWarnings("SameParameterValue")
     static int solveA(int startA, int startB, Long iterations) {
         int matches=0;
         Long restA= (long) startA, restB= (long) startB;
@@ -15,6 +16,7 @@ class Day15 {
         return matches;
     }
 
+    @SuppressWarnings("SameParameterValue")
     static int solveB(int startA, int dividerA, int startB, int dividerB, long iterations) {
         int matches=0;
         Long restA= (long) startA, restB= (long) startB;
