@@ -2,8 +2,8 @@ package day18;
 
 import org.junit.jupiter.api.Test;
 
-import static day18.Day18.getTimesOneSent;
-import static day18.Day18.setInput;
+import static day18.Day18.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Day18Test {
     @Test
@@ -19,6 +19,7 @@ class Day18Test {
                 "set a 1\n" +
                 "jgz a -2";
         setInput(input);
+        assertEquals(4L, getFirstRecovery());
     }
     @Test
     void testB() {
@@ -30,11 +31,11 @@ class Day18Test {
                 "rcv c\n" +
                 "rcv d";
         setInput(input);
-        System.out.print("Tiems one sent: "+getTimesOneSent());
+        assertEquals(3, getNumberOfMessageSentFromProgram1());
     }
 
     @Test
-    public void puzzle() {
+    void puzzle() {
         String input ="set i 31\n" +
                 "set a 1\n" +
                 "mul p 17\n" +
@@ -77,7 +78,9 @@ class Day18Test {
                 "jgz f -16\n" +
                 "jgz a -19";
         setInput(input);
-        System.out.print("Tiems one sent: "+getTimesOneSent()); //inte 14986
+
+        System.out.println("Result Day18(a): " + getFirstRecovery());
+        System.out.println("Result Day18(b): " + getNumberOfMessageSentFromProgram1());
 
     }
 }

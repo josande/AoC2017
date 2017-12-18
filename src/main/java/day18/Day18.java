@@ -6,163 +6,142 @@ import java.util.List;
 import java.util.Map;
 
 class Day18 {
-    static private List<Long> toProgram0;
-    static private List<Long> toProgram1;
-    static private Map<String, Long> values;
-    static private Map<String, Long> otherValues;
+    private static List<Long> toProgramQueue0;
+    private static List<Long> toProgramQueue1;
+    private static Map<String, Long> values;
+    private static Map<String, Long> otherValues;
+    private static boolean firstRecovery;
+    private static int position, otherPosition;
+    private static long firstRecoveredValue;
+    private static int currentId;
 
-    static private int position;
-    static private int otherPosition;
-
-    static private int currentId;
-
-    static private int timesOneSent;
+    private static int timesOneSent;
     static void setInput(String input) {
-        timesOneSent=0;
-        toProgram0 = new ArrayList<>();
-        toProgram1 = new ArrayList<>();
+        //Set initial values
+        firstRecovery = true;
+        firstRecoveredValue = 0L;
+        timesOneSent = 0;
+        toProgramQueue0 = new ArrayList<>();
+        toProgramQueue1 = new ArrayList<>();
 
         values = new HashMap<>();
         otherValues = new HashMap<>();
-        position =0; otherPosition=0;
-        currentId=0;
+
+        position =0; otherPosition=0; currentId=0;
+        //Starting parameters for 18b
+        values.put("p",  0L);
+        otherValues.put("p",  1L);
+
         String[] rows=input.split("\n");
         while(position >=0 && position < rows.length) {
             executeCommand(rows[position]);
         }
-        values.put("p",  0L);
-        otherValues.put("p",  1L);
-
     }
-    static int getTimesOneSent() {
+    static long getFirstRecovery() {
+        return firstRecoveredValue;
+    }
+    static int getNumberOfMessageSentFromProgram1() {
         return timesOneSent;
     }
-    static void executeCommand(String row) {
-        String command = row.split(" ")[0];
-        switch(command) {
-            case "snd" : sendMessage(row); position++; break;
-            case "set" : setRegistry(row); position++; break;
-            case "add" : add(row); position++; break;
-            case "mul" : multiply(row); position++; break;
-            case "mod" : modulo(row); position++; break;
-            case "rcv" : recover(row); break;
-            case "jgz" : jump(row); break;
+    private static void executeCommand(String row) {
+        String[] command = row.split(" ");
+        switch(command[0]) {
+            case "snd" : sendMessage(command); position++; break;
+            case "set" : setRegistry(command); position++; break;
+            case "add" : add(command); position++; break;
+            case "mul" : multiply(command); position++; break;
+            case "mod" : modulo(command); position++; break;
+            case "rcv" : recover(command); break;
+            case "jgz" : jump(command); break;
             default : System.out.println("Unhandled command "+row);break;
         }
     }
 
-    static private void sendMessage(String row) {
-        String value = row.split(" ")[1];
-        System.out.println(position +" - "+row.split(" ")[0]+" "+(value));
-        if (currentId==0)
-            toProgram1.add(stringToInt(value));
-        else {
+    static private void sendMessage(String[] row) {
+        if (currentId==0) {
+            toProgramQueue1.add(stringToInt(row[1]));
+        } else {
             timesOneSent++;
-            toProgram0.add(stringToInt(value));
+            toProgramQueue0.add(stringToInt(row[1]));
         }
     }
-    static private void setRegistry(String row) {
-        String value = row.split(" ")[2];
-        String registry = row.split(" ")[1];
-        System.out.println(position +" - "+row.split(" ")[0]+" "+(registry)+" "+stringToInt(value));
-
-        setValue(registry, stringToInt(value));
+    static private void setRegistry(String[] row) {
+        setValue(row[1], stringToInt(row[2]));
     }
-    static private void add(String row) {
-        String value = row.split(" ")[2];
-        String registry = row.split(" ")[1];
-        System.out.println(position +" - "+row.split(" ")[0]+" "+(registry)+" "+stringToInt(value));
-
-        setValue(registry, getValue(registry) + stringToInt(value));
+    static private void add(String[] row) {
+        setValue(row[1], getValue(row[1]) + stringToInt(row[2]));
     }
-    static private void multiply(String row) {
-        String value = row.split(" ")[2];
-        String registry = row.split(" ")[1];
-        System.out.println(position +" - "+row.split(" ")[0]+" "+(registry)+" "+stringToInt(value));
-
-        setValue(registry, getValue(registry) * stringToInt(value));
+    static private void multiply(String[] row) {
+        setValue(row[1], getValue(row[1]) * stringToInt(row[2]));
     }
-    static private void modulo(String row) {
-        String value = row.split(" ")[2];
-        String registry = row.split(" ")[1];
-        System.out.println(position +" - "+row.split(" ")[0]+" "+registry+" "+stringToInt(value));
-
-        setValue(registry, getValue(registry)%stringToInt(value));
+    static private void modulo(String[] row) {
+        setValue(row[1], getValue(row[1])%stringToInt(row[2]));
     }
-    static private void recover(String row) {
-        String registry = row.split(" ")[1];
+    static private void recover(String[] row) {
         Long value=null;
 
         if (currentId==0) {
-            if (!toProgram0.isEmpty()) {
-                value = toProgram0.get(0);
-                toProgram0.remove(0);
+            if (!toProgramQueue0.isEmpty()) {
+                value = toProgramQueue0.get(0);
+                toProgramQueue0.remove(0);
             }
         } else {
-            if (!toProgram1.isEmpty()) {
-                value = toProgram1.get(0);
-                toProgram1.remove(0);
+            if (!toProgramQueue1.isEmpty()) {
+                value = toProgramQueue1.get(0);
+                if (firstRecovery) {
+                    firstRecovery = false;
+                    firstRecoveredValue = toProgramQueue1.get(toProgramQueue1.size()-1);
+                }
+                toProgramQueue1.remove(0);
             }
         }
+
         if(value!=null) {
-            setValue(registry, value);
+            setValue(row[1], value);
             position++;
         }
         else
             switchProgram();
     }
     static private void switchProgram() {
-        if (toProgram0.isEmpty() && toProgram1.isEmpty())
-            position=-2;
+        if (toProgramQueue0.isEmpty() && toProgramQueue1.isEmpty())
+            position=-2; //This ends the execution
         else {
             int tempPosition = position;
             position = otherPosition;
             otherPosition = tempPosition;
 
-            HashMap<String, Long> tempMap = new HashMap<String, Long>(values);
-            values = new HashMap<String, Long>(otherValues);
-            otherValues = new HashMap<String, Long>(tempMap);
+            HashMap<String, Long> tempMap = new HashMap<>(values);
+            values = new HashMap<>(otherValues);
+            otherValues = new HashMap<>(tempMap);
 
-            if (currentId == 0)
-                currentId = 1;
-            else
-                currentId = 0;
+            currentId=currentId==0?1:0;
         }
 
     }
-    static private void jump(String row) {
-        String val1=row.split(" ")[1];
-        String val2=row.split(" ")[2];
-        System.out.println(position +" - "+row.split(" ")[0]+" "+(val1)+" "+stringToInt(val2));
-
-        if (stringToInt(val1)>0) {
-            position +=stringToInt(val2);
+    static private void jump(String[] row) {
+        if (stringToInt(row[1])>0) {
+            position +=stringToInt(row[2]);
         } else {
-            position = position +1;
+            position++;
         }
     }
 
 
-    static void setValue(String name, Long value) {
+    private static void setValue(String name, Long value) {
         if (values.containsKey(name)) {
             values.replace(name, value);
         } else {
             values.put(name, value);
         }
     }
-    static Long getValue(String registry) {
-        if (values.containsKey(registry))
-            return values.get(registry);
-        else
-            return 0L;
+    private static Long getValue(String registry) {
+        return values.getOrDefault(registry, 0L);
     }
-    static private Long stringToInt(String string) {
-        Long value;
-        try {
-            value = Long.parseLong(string);
-        } catch (Exception ex) {
-            value=getValue(string);
+    private static Long stringToInt(String string) {
+        if (string.matches("^-?\\d+$")) {
+            return Long.parseLong(string);
         }
-        return value;
+        return getValue(string);
     }
 }
