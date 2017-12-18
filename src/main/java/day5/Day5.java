@@ -1,15 +1,19 @@
 package day5;
 
 class Day5 {
-    static int calculateA(String input) {
+    private static int[] values;
+    private static int position, size;
+    static void setInput(String input) {
         String[] valuesAsString = input.split(" ");
-        int size= valuesAsString.length, position=0, steps=0;
+        size= valuesAsString.length; position=0;
 
-        int[] values= new int[size];
+        values= new int[size];
         for (int i=0;i<size;i++) {
             values[i]=Integer.valueOf(valuesAsString[i]);
         }
-
+    }
+    static int calculateA() {
+        int steps=0;
         while (position < size) {
             int cv = values[position];
             values[position] = cv+1;
@@ -18,15 +22,8 @@ class Day5 {
         }
         return steps;
     }
-    static int calculateB(String input) {
-        String[] valuesAsString = input.split(" ");
-        int size = valuesAsString.length, position = 0, steps = 0;
-
-        int[] values = new int[size];
-        for (int i = 0; i < size; i++) {
-            values[i] = Integer.valueOf(valuesAsString[i]);
-        }
-
+    static int calculateB() {
+        int steps=0;
         while (position < size) {
             int cv = values[position];
             values[position] = cv+(cv<3?1:-1);

@@ -20,7 +20,7 @@ class Day17 {
         int value=0;
         for (int i = 1; i<=length;i++) {
             currentPosition=getNextPosition(currentPosition,i,steps);
-            if (currentPosition==1) { value=i;}
+            if (currentPosition==1) value=i;
         }
         return value;
     }

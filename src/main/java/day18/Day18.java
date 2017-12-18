@@ -127,7 +127,6 @@ class Day18 {
         }
     }
 
-
     private static void setValue(String name, Long value) {
         if (values.containsKey(name)) {
             values.replace(name, value);

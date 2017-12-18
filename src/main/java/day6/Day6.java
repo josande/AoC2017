@@ -5,30 +5,23 @@ import java.util.Arrays;
 import java.util.List;
 
 class Day6 {
-
-    static int calculateA(String input) {
-        List<Integer[]> knownStates=getKnownValues(input);
+    private static List<Integer[]> knownStates;
+    static void setInput(String input) {
+        knownStates=getKnownValues(input);
+    }
+    static int calculateA() {
         return knownStates.size()-1;
     }
 
-    static int calculateB(String input) {
-        List<Integer[]> knownStates=getKnownValues(input);
+    static int calculateB() {
         Integer[] duplicate = knownStates.get(knownStates.size()-1);
 
         for (int i = 0; i<knownStates.size(); i++) {
-            boolean match=true;
-            for (int v=0;v<duplicate.length; v++) {
-                if (!knownStates.get(i)[v].equals(duplicate[v])) {
-                    match=false;
-                }
-            }
-
-            if (match) {
-                return knownStates.size()-1 - i;
+            if (Arrays.equals(knownStates.get(i), duplicate)) {
+                return knownStates.size() - 1 - i;
             }
         }
         return -1;
-
     }
 
     private static List<Integer[]> getKnownValues(String input) {
@@ -37,11 +30,12 @@ class Day6 {
         int size= valuesAsString.length;
 
         Integer[] values= new Integer[size];
+
         for (int i=0;i<size;i++) {
             values[i]=Integer.valueOf(valuesAsString[i]);
         }
 
-        for (int i=0;;i++) {
+        while (true) {
             knownStates.add(Arrays.copyOf(values, size));
 
             int highestValue = 0;
@@ -67,13 +61,7 @@ class Day6 {
                 }
             }
             for (Integer[] state : knownStates) {
-                boolean match = true;
-                for (int v = 0; v < size; v++) {
-                    if (!values[v].equals(state[v])) {
-                        match = false;
-                    }
-                }
-                if (match) {
+                if (Arrays.equals(state, values)) {
                     knownStates.add(values);
                     return knownStates;
                 }
