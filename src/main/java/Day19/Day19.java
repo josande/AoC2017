@@ -8,22 +8,20 @@ class Day19 {
         letters=""; steps=0;
 
         String[] rows = input.split("\n");
+
         width=rows[0].length();
         height=rows.length;
 
-        map = new char[width][height];
+        map = new char[height][width];
 
         //Create map
         for (int y=0; y<height; y++) {
-             for (int x=0; x < width; x++) {
-                 char c=rows[y].charAt(x);
-                 map[x][y]=c;
-             }
+            map[y]=rows[y].toCharArray();
         }
         //Find start pos
         y=0;
         for (x=0; x<width; x++) {
-            if (map[x][y]==('|')) {
+            if (map[y][x]==('|')) {
                 break;
             }
         }
@@ -45,30 +43,29 @@ class Day19 {
          if (x<0 || x==width || y<0 || y==height) {
              return false;
          }
-         char c = map[x][y];
+         char c = map[y][x];
          switch (c) {
              case '|' : {break;}
              case '+' : {
                  if (dy!=0) {
-                    if (x<width-1 && map[x+1][y]!=' ') {
+                    if (x<width-1 && map[y][x+1]!=' ') {
                         dy=0; dx=1;
                     }
-                    if (x>0 && map[x-1][y]!=' ') {
+                    if (x>0 && map[y][x-1]!=' ') {
                          dy=0; dx=-1;
                     }
                  } else {
-                     if (y<height-1 && map[x][y+1]!=' ') {
+                     if (y<height-1 && map[y+1][x]!=' ') {
                          dy=1; dx=0;
                      }
-                     if (y>0 && map[x][y-1]!=' ') {
+                     if (y>0 && map[y-1][x]!=' ') {
                          dy=-1; dx=0;
                      }
                  }
                  break;}
              case '-' : {break;}
-             default  : {if (c==' ')
-                 return false; letters+=c; break;}
-
+             case ' ' : {return false;}
+             default  : {letters+=c;}
          }
 
          return true;
