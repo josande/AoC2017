@@ -15,11 +15,8 @@ class Day15Test {
         assertEquals(309, solveB(65,4,8921,8,5000000L));
     }
     @Test
-    void puzzleA() {
+    void puzzle() {
         System.out.println("Day15(a): "+solveA(591, 393, 40000000L));
-    }
-    @Test
-    void puzzleB() {
         System.out.println("Day15(b): "+solveB(591, 4, 393, 8 ,5000000L));
     }
 }

@@ -23,12 +23,12 @@ class Day15 {
         Long temp;
         for (int i=0; i<iterations; i++) {
             temp=-1L;
-            while (temp%dividerA != 0) {
+            while ((temp & (dividerA-1)) != 0 ) {
                 restA = restA * multiplierA % divider;
                 temp=restA;
             }
             temp=-1L;
-            while (temp%dividerB != 0) {
+            while ((temp & (dividerB-1)) != 0 ) {
                 restB=restB*multiplierB % divider;
                 temp=restB;
             }

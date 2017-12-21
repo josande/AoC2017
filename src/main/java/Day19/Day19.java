@@ -1,4 +1,4 @@
-package Day19;
+package day19;
 
 class Day19 {
     private static char[][] map;
@@ -27,6 +27,7 @@ class Day19 {
         }
         dx=0; dy=1;
         //Run the maze
+        //noinspection StatementWithEmptyBody
         while (getNextChar());
 
     }
@@ -67,8 +68,6 @@ class Day19 {
              case ' ' : {return false;}
              default  : {letters+=c;}
          }
-
          return true;
-
      }
 }

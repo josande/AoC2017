@@ -1,10 +1,10 @@
-package Day19;
+package day19;
 
 import org.junit.jupiter.api.Test;
 
-import static Day19.Day19.getLetters;
-import static Day19.Day19.getSteps;
-import static Day19.Day19.setInput;
+import static day19.Day19.getLetters;
+import static day19.Day19.getSteps;
+import static day19.Day19.setInput;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Day19Test {

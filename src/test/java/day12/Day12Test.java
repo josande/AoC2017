@@ -17,7 +17,7 @@ class Day12Test {
                      "6 <-> 4, 5\n";
         setInput(input);
         assertEquals(6, getGroupContaining(0).size());
-        assertEquals(1, getNumberOfGroups());
+        assertEquals(2, getNumberOfGroups());
     }
 
     @Test
